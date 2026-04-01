@@ -1,25 +1,59 @@
-<wxs src="./index.wxs" module="utils" />
+<nav nav-type="search" />
 
-<nav nav-type="title" title-text="全部消息"></nav>
-<scroll-view
-  class="message-list"
-  scroll-y
-  refresher-enabled
-  refresher-triggered="{{ loading }}"
-  bindrefresherrefresh="getMessageList"
->
-  <t-cell
-    wx:for="{{ messageList }}"
-    wx:key="index"
-    t-class-image="avatar"
-    t-class-description="content {{ utils.isRead(item.messages) ? '' : 'unread' }}"
-    image="{{ item.avatar }}"
-    title="{{ item.name }}"
-    description="{{ item.messages[item.messages.length - 1].content }}"
-    hover
-    bind:tap="toChat"
-    data-user-id="{{ item.userId }}"
+<view class="message-page">
+  <scroll-view class="message-filters" scroll-x enable-flex show-scrollbar="{{false}}">
+    <view
+      wx:for="{{filters}}"
+      wx:key="value"
+      class="message-filter {{activeFilter === item.value ? 'message-filter--active' : ''}}"
+      data-value="{{item.value}}"
+      bindtap="handleFilterTap"
+    >
+      {{item.label}}
+    </view>
+  </scroll-view>
+
+  <scroll-view
+    class="message-list"
+    scroll-y
+    refresher-enabled
+    refresher-triggered="{{ loading }}"
+    bindrefresherrefresh="getMessageList"
   >
-    <t-badge slot="right-icon" count="{{ utils.computeUnreadNum(item.messages) }}" class="wrapper" />
-  </t-cell>
-</scroll-view>
+    <view class="message-list__heading">Inbox</view>
+    <view class="message-list__subheading">Prioritize the conversations that need your attention.</view>
+
+    <view
+      wx:for="{{ threads }}"
+      wx:key="userId"
+      class="thread {{item.isRead ? '' : 'thread--unread'}}"
+      bind:tap="toChat"
+      data-user-id="{{ item.userId }}"
+    >
+      <image class="thread__avatar" src="{{ item.avatar }}" mode="aspectFill" />
+      <view class="thread__content">
+        <view class="thread__top">
+          <text class="thread__name">{{ item.name }}</text>
+          <text class="thread__time">{{ item.timeLabel }}</text>
+        </view>
+
+        <view class="thread__middle">
+          <text class="thread__subject">{{ item.subject }}</text>
+          <view wx:if="{{ item.unreadCount }}" class="thread__count">{{ item.unreadCount }}</view>
+        </view>
+
+        <text class="thread__snippet">{{ item.snippet }}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{ !threads.length && !loading }}" class="message-empty">
+      <text class="message-empty__title">All clear</text>
+      <text class="message-empty__desc">No conversations match the current filter.</text>
+    </view>
+  </scroll-view>
+
+  <view class="message-compose" bindtap="goCompose">
+    <t-icon name="edit-1" size="36rpx" />
+    <text>Compose</text>
+  </view>
+</view>

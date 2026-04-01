@@ -1,33 +1,39 @@
 <wxs src="./index.wxs" module="utils" />
 
-<t-navbar class="nav-bar" title="{{ name }}" left-arrow />
+<t-navbar class="thread-nav" title="{{ name }}" left-arrow />
 
-<view class="chat-container">
-  <scroll-view class="content" scroll-y scroll-into-view="{{ anchor }}">
-    <view class="messages">
+<view class="thread-page">
+  <view class="thread-summary">
+    <text class="thread-summary__eyebrow">Conversation</text>
+    <text class="thread-summary__title">{{ name }}</text>
+    <text class="thread-summary__desc">A Gmail-inspired thread view with quieter bubbles and a stronger reading rhythm.</text>
+  </view>
+
+  <scroll-view class="thread-content" scroll-y scroll-into-view="{{ anchor }}">
+    <view class="thread-messages">
       <block wx:for="{{ messages }}" wx:key="index">
-        <view wx:if="{{ index === 0 || item.time - messages[index - 1].time > 120000 }}" class="time" >
+        <view wx:if="{{ index === 0 || item.time - messages[index - 1].time > 120000 }}" class="thread-time">
           {{ utils.formatTime(item.time) }}
         </view>
 
-        <view wx:if="{{ item.from === 0 }}" class="message-area">
-          <view class="message self">
-          <text space="nbsp">{{ item.content }}</text>
-          <t-loading
-            wx:if="{{ item.messageId === null }}"
-            t-class="loading"
-            theme="spinner"
-            size="32rpx"
-            class="wrapper"
-          />
+        <view wx:if="{{ item.from === 0 }}" class="thread-row thread-row--self">
+          <view class="thread-bubble thread-bubble--self">
+            <text class="thread-bubble__text" space="nbsp">{{ item.content }}</text>
+            <t-loading
+              wx:if="{{ item.messageId === null }}"
+              t-class="thread-bubble__loading"
+              theme="spinner"
+              size="28rpx"
+              class="wrapper"
+            />
           </view>
           <t-avatar image="{{ myAvatar }}" size="small" />
         </view>
 
-        <view wx:else class="message-area">
+        <view wx:else class="thread-row">
           <t-avatar image="{{ avatar }}" size="small" />
-          <view class="message other">
-          <text space="nbsp">{{ item.content }}</text>
+          <view class="thread-bubble thread-bubble--other">
+            <text class="thread-bubble__text" space="nbsp">{{ item.content }}</text>
           </view>
         </view>
       </block>
@@ -36,15 +42,15 @@
   </scroll-view>
 </view>
 
-<view class="block" style="margin-bottom: {{ keyboardHeight }}px" />
-<view class="bottom" style="margin-bottom: {{ keyboardHeight }}px">
-  <view class="input">
+<view class="thread-block" style="margin-bottom: {{ keyboardHeight }}px" />
+<view class="thread-reply" style="margin-bottom: {{ keyboardHeight }}px">
+  <view class="thread-reply__input">
     <input
       value="{{ input }}"
       type="text"
       confirm-type="send"
-      placeholder="请输入"
-      placeholder-style="color: #00000066"
+      placeholder="Reply in thread"
+      placeholder-style="color: rgba(31, 31, 31, 0.42)"
       adjust-position="{{ false }}"
       hold-keyboard
       confirm-hold
@@ -54,5 +60,7 @@
       bindconfirm="sendMessage"
     />
   </view>
-  <t-button class="send" theme="primary" shape="round" disabled="{{ !input }}" bind:tap="sendMessage">发送</t-button>
+  <t-button class="thread-reply__send" theme="primary" shape="round" disabled="{{ !input }}" bind:tap="sendMessage">
+    Send
+  </t-button>
 </view>

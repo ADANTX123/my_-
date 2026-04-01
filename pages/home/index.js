@@ -1,54 +1,68 @@
 import Message from 'tdesign-miniprogram/message/index';
 import request from '~/api/request';
 
-// 获取应用实例
-// const app = getApp()
+const app = getApp();
 
 Page({
   data: {
     enable: false,
     swiperList: [],
     cardInfo: [],
-    // 发布
-    motto: 'Hello World',
-    userInfo: {},
-    hasUserInfo: false,
-    canIUse: wx.canIUse('button.open-type.getUserInfo'),
-    canIUseGetUserProfile: false,
-    canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName'), // 如需尝试获取用户信息可改为false
+    focusCardInfo: [],
+    workspaceStats: [],
+    quickActions: [
+      { label: 'Inbox', value: 'inbox', icon: 'chat' },
+      { label: 'Search', value: 'search', icon: 'search' },
+      { label: 'Compose', value: 'compose', icon: 'edit-1' },
+    ],
+    workspaceHighlights: [
+      {
+        title: 'Priority inbox is on',
+        desc: 'Unread conversations, starred items and quick actions stay one tap away.',
+      },
+      {
+        title: 'Search everything faster',
+        desc: 'Use the top search field to jump between threads, notes and saved assets.',
+      },
+      {
+        title: 'Compose from anywhere',
+        desc: 'The floating action button mirrors Gmail and keeps creation in reach.',
+      },
+    ],
   },
-  // 生命周期
+
+  onLoad(option) {
+    this.updateWorkspaceStats();
+    if (option && option.oper) {
+      let content = '';
+      if (option.oper === 'release') {
+        content = 'Message created';
+      } else if (option.oper === 'save') {
+        content = 'Draft saved';
+      }
+      if (content) {
+        this.showOperMsg(content);
+      }
+    }
+  },
+
   async onReady() {
     const [cardRes, swiperRes] = await Promise.all([
       request('/home/cards').then((res) => res.data),
       request('/home/swipers').then((res) => res.data),
     ]);
 
-    this.setData({
-      cardInfo: cardRes.data,
-      focusCardInfo: cardRes.data.slice(0, 3),
-      swiperList: swiperRes.data,
-    });
+    this.applyHomeData(cardRes.data, swiperRes.data);
   },
-  onLoad(option) {
-    if (wx.getUserProfile) {
-      this.setData({
-        canIUseGetUserProfile: true,
-      });
-    }
-    if (option.oper) {
-      let content = '';
-      if (option.oper === 'release') {
-        content = '发布成功';
-      } else if (option.oper === 'save') {
-        content = '保存成功';
-      }
-      this.showOperMsg(content);
-    }
+
+  onShow() {
+    this.updateWorkspaceStats();
   },
+
   onRefresh() {
     this.refresh();
   },
+
   async refresh() {
     this.setData({
       enable: true,
@@ -59,24 +73,65 @@ Page({
     ]);
 
     setTimeout(() => {
+      this.applyHomeData(cardRes.data, swiperRes.data);
       this.setData({
         enable: false,
-        cardInfo: cardRes.data,
-        swiperList: swiperRes.data,
       });
-    }, 1500);
+    }, 800);
   },
+
+  applyHomeData(cardInfo, swiperList) {
+    this.setData(
+      {
+        cardInfo,
+        focusCardInfo: cardInfo.slice(0, 3),
+        swiperList,
+      },
+      () => {
+        this.updateWorkspaceStats();
+      },
+    );
+  },
+
+  updateWorkspaceStats() {
+    const unreadThreads = app.globalData.unreadNum || 0;
+    const priorityItems = this.data.focusCardInfo.length;
+    const totalUpdates = this.data.cardInfo.length;
+
+    this.setData({
+      workspaceStats: [
+        { label: 'Unread', value: unreadThreads },
+        { label: 'Priority', value: priorityItems },
+        { label: 'Updates', value: totalUpdates },
+      ],
+    });
+  },
+
   showOperMsg(content) {
     Message.success({
       context: this,
       offset: [120, 32],
-      duration: 4000,
+      duration: 3000,
       content,
     });
   },
+
   goRelease() {
     wx.navigateTo({
       url: '/pages/release/index',
     });
+  },
+
+  handleQuickAction(event) {
+    const { value } = event.currentTarget.dataset;
+    if (value === 'inbox') {
+      wx.switchTab({ url: '/pages/message/index' });
+      return;
+    }
+    if (value === 'search') {
+      wx.navigateTo({ url: '/pages/search/index' });
+      return;
+    }
+    this.goRelease();
   },
 });

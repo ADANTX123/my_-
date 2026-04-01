@@ -6,7 +6,7 @@ Page({
     popularWords: [],
     searchValue: '',
     dialog: {
-      title: '确认删除当前历史记录',
+      title: 'Delete search history',
       showCancelButton: true,
       message: '',
     },
@@ -21,10 +21,6 @@ Page({
     this.queryPopular();
   },
 
-  /**
-   * 查询历史记录
-   * @returns {Promise<void>}
-   */
   async queryHistory() {
     request('/api/searchHistory').then((res) => {
       const { code, data } = res;
@@ -38,10 +34,6 @@ Page({
     });
   },
 
-  /**
-   * 查询热门搜索
-   * @returns {Promise<void>}
-   */
   async queryPopular() {
     request('/api/searchPopular').then((res) => {
       const { code, data } = res;
@@ -70,18 +62,8 @@ Page({
       searchValue,
       historyWords,
     });
-    // if (searchValue) {
-    //     wx.navigateTo({
-    //         url: `/pages/goods/result/index?searchValue=${searchValue}`,
-    //     });
-    // }
   },
 
-  /**
-   * 清空历史记录的再次确认框
-   * 后期可能需要增加一个向后端请求的接口
-   * @returns {Promise<void>}
-   */
   confirm() {
     const { historyWords } = this.data;
     const { deleteType, deleteIndex } = this;
@@ -97,25 +79,17 @@ Page({
     }
   },
 
-  /**
-   * 取消清空历史记录
-   * @returns {Promise<void>}
-   */
   close() {
     this.setData({ dialogShow: false });
   },
 
-  /**
-   * 点击清空历史记录
-   * @returns {Promise<void>}
-   */
   handleClearHistory() {
     const { dialog } = this.data;
     this.deleteType = 1;
     this.setData({
       dialog: {
         ...dialog,
-        message: '确认删除所有历史记录',
+        message: 'Delete all recent searches?',
       },
       dialogShow: true,
     });
@@ -129,17 +103,12 @@ Page({
     this.setData({
       dialog: {
         ...dialog,
-        message: '确认删除当前历史记录',
+        message: 'Delete this search item?',
       },
       dialogShow: true,
     });
   },
 
-  /**
-   * 点击关键词跳转搜索
-   * 后期需要增加跳转和后端请求接口
-   * @returns {Promise<void>}
-   */
   handleHistoryTap(e) {
     const { historyWords } = this.data;
     const { index } = e.currentTarget.dataset;
@@ -156,11 +125,6 @@ Page({
     this.setHistoryWords(searchValue);
   },
 
-  /**
-   * 提交搜索框内容
-   * 后期需要增加跳转和后端请求接口
-   * @returns {Promise<void>}
-   */
   handleSubmit(e) {
     const { value } = e.detail;
     if (value.length === 0) return;
@@ -168,10 +132,6 @@ Page({
     this.setHistoryWords(value);
   },
 
-  /**
-   * 点击取消回到主页
-   * @returns {Promise<void>}
-   */
   actionHandle() {
     this.setData({
       searchValue: '',

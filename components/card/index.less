@@ -1,27 +1,56 @@
 @import '/variable.less';
 
-.home-card {
+.workspace-card {
   display: inline-flex;
   flex-direction: column;
-  width: 340rpx;
-  height: 488rpx;
-  border-radius: 9px;
-  background: @bg-color-white;
+  width: 336rpx;
+  overflow: hidden;
+  border-radius: 30rpx;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: @shadow-soft;
 
   &__image {
-    width: 340rpx;
-    height: 340rpx;
+    width: 336rpx;
+    height: 248rpx;
+    background: linear-gradient(180deg, #dbe7ff 0%, #edf3ff 100%);
   }
 
-  &__info {
-    padding: 32rpx;
-    font-weight: 400;
-    font-size: @font-size-small;
+  &__body {
+    padding: 22rpx 22rpx 24rpx;
+  }
+
+  &__topline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16rpx;
+  }
+
+  &__eyebrow {
+    font-size: 20rpx;
+    font-weight: 600;
+    color: @brand-google-blue;
+    text-transform: uppercase;
+    letter-spacing: 1rpx;
+  }
+
+  &__arrow {
+    color: @gy3;
+  }
+
+  &__title {
+    display: block;
+    margin-top: 14rpx;
+    font-size: 28rpx;
+    line-height: 1.45;
+    color: @gy1;
+    min-height: 82rpx;
   }
 
   &__tag-group {
     display: flex;
-    gap: 16rpx;
-    margin-top: 16rpx;
+    flex-wrap: wrap;
+    gap: 12rpx;
+    margin-top: 18rpx;
   }
 }

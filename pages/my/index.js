@@ -8,27 +8,32 @@ Page({
     isLoad: false,
     service: [],
     personalInfo: {},
+    accountInfo: {
+      email: 'workspace.user@gmail.com',
+      plan: 'Google Workspace style demo',
+      storage: '12.4 GB of 15 GB used',
+    },
     gridList: [
       {
-        name: '全部发布',
+        name: 'All mail',
         icon: 'root-list',
         type: 'all',
         url: '',
       },
       {
-        name: '审核中',
+        name: 'Scheduled',
         icon: 'search',
-        type: 'progress',
+        type: 'scheduled',
         url: '',
       },
       {
-        name: '已发布',
+        name: 'Sent',
         icon: 'upload',
-        type: 'published',
+        type: 'sent',
         url: '',
       },
       {
-        name: '草稿箱',
+        name: 'Drafts',
         icon: 'file-copy',
         type: 'draft',
         url: '',
@@ -36,8 +41,8 @@ Page({
     ],
 
     settingList: [
-      { name: '联系客服', icon: 'service', type: 'service' },
-      { name: '设置', icon: 'setting', type: 'setting', url: '/pages/setting/index' },
+      { name: 'Help & feedback', icon: 'service', type: 'service' },
+      { name: 'Settings', icon: 'setting', type: 'setting', url: '/pages/setting/index' },
     ],
   },
 
@@ -46,21 +51,30 @@ Page({
   },
 
   async onShow() {
-    const Token = wx.getStorageSync('access_token');
+    const token = wx.getStorageSync('access_token');
     const personalInfo = await this.getPersonalInfo();
 
-    if (Token) {
+    if (token) {
       this.setData({
         isLoad: true,
         personalInfo,
       });
+      return;
     }
+
+    this.setData({
+      isLoad: false,
+    });
   },
 
   getServiceList() {
     request('/api/getServiceList').then((res) => {
       const { service } = res.data.data;
-      this.setData({ service });
+      const mapped = service.slice(0, 4).map((item, index) => ({
+        ...item,
+        name: ['Calendar', 'Meet', 'Docs', 'Drive'][index] || item.name,
+      }));
+      this.setData({ service: mapped });
     });
   },
 
@@ -69,19 +83,22 @@ Page({
     return info;
   },
 
-  onLogin(e) {
+  onLogin() {
     wx.navigateTo({
       url: '/pages/login/login',
     });
   },
 
   onNavigateTo() {
-    wx.navigateTo({ url: `/pages/my/info-edit/index` });
+    wx.navigateTo({ url: '/pages/my/info-edit/index' });
   },
 
   onEleClick(e) {
     const { name, url } = e.currentTarget.dataset.data;
-    if (url) return;
-    this.onShowToast('#t-toast', name);
+    if (url) {
+      wx.navigateTo({ url });
+      return;
+    }
+    this.onShowToast('#t-toast', `${name} is coming soon`);
   },
 });

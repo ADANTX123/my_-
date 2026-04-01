@@ -1,23 +1,33 @@
-<view class="home-navbar">
-  <t-navbar title="{{ navType === 'search' ? '' : titleText }}">
-    <view slot="left">
-      <view class="home-navbar__left">
-        <t-icon class="home-navbar__icon" bind:tap="openDrawer" name="view-list" size="48rpx" />
-        <t-search
-          shape="round"
-          placeholder="请搜索你想要的内容"
-          bindtap="searchTurn"
-          wx:if="{{navType === 'search'}}"
-        />
+<view class="mail-nav">
+  <view class="mail-nav__shell" style="padding-top: {{statusHeight}}px;">
+    <view class="mail-nav__bar">
+      <view class="mail-nav__menu" bind:tap="openDrawer">
+        <t-icon class="mail-nav__icon" name="view-list" size="46rpx" />
       </view>
+
+      <view class="mail-nav__search" wx:if="{{navType === 'search'}}" bindtap="searchTurn">
+        <t-icon class="mail-nav__search-icon" name="search" size="36rpx" />
+        <view class="mail-nav__search-copy">
+          <text class="mail-nav__placeholder">Search in mail</text>
+          <text class="mail-nav__label">Google-style workspace</text>
+        </view>
+      </view>
+
+      <view class="mail-nav__title-wrap" wx:else>
+        <text class="mail-nav__title">{{titleText || 'Mailbox'}}</text>
+        <text class="mail-nav__label">Focused view</text>
+      </view>
+
+      <image class="mail-nav__avatar" src="/static/avatar1.png" mode="aspectFill" bindtap="toProfile" />
     </view>
-  </t-navbar>
+  </view>
+
   <t-drawer
     style="padding-top: {{statusHeight}}px;"
     visible="{{visible}}"
     items="{{sidebar}}"
     placement="left"
-    title="页面目录"
+    title="Workspace"
     bind:item-click="itemClick"
   />
 </view>

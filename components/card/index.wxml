@@ -1,8 +1,12 @@
-<view class="home-card">
-  <t-image t-class="home-card__image" src="{{url}}" mode="aspectFill" />
-  <view class="home-card__info">
-    <text>{{desc}}</text>
-    <view class="home-card__tag-group">
+<view class="workspace-card">
+  <image class="workspace-card__image" src="{{url}}" mode="aspectFill" />
+  <view class="workspace-card__body">
+    <view class="workspace-card__topline">
+      <text class="workspace-card__eyebrow">Workspace update</text>
+      <t-icon class="workspace-card__arrow" name="chevron-right" size="30rpx" />
+    </view>
+    <text class="workspace-card__title">{{desc}}</text>
+    <view class="workspace-card__tag-group">
       <t-tag wx:for="{{tags}}" wx:key="index" size="small" variant="light" theme="{{item.theme}}">{{item.text}}</t-tag>
     </view>
   </view>

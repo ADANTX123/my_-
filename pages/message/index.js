@@ -1,70 +1,85 @@
-// pages/message/message.js
 import { fetchMessageList, markMessagesRead } from '~/mock/chat';
 
 const app = getApp();
-const { socket } = app.globalData; // 获取已连接的 socketTask
-let currentUser = null; // 当前打开的聊天用户 { userId, eventChannel }
+const { socket } = app.globalData;
+let currentUser = null;
+
+function formatThreadTime(time) {
+  if (!time) return '';
+  const current = new Date();
+  const target = new Date(time);
+  const isSameDay =
+    current.getFullYear() === target.getFullYear() &&
+    current.getMonth() === target.getMonth() &&
+    current.getDate() === target.getDate();
+
+  if (isSameDay) {
+    const hour = `${target.getHours()}`.padStart(2, '0');
+    const minute = `${target.getMinutes()}`.padStart(2, '0');
+    return `${hour}:${minute}`;
+  }
+
+  return `${target.getMonth() + 1}/${target.getDate()}`;
+}
 
 Page({
-  /** 页面的初始数据 */
   data: {
-    messageList: [], // 完整消息列表 { userId, name, avatar, messages }
-    loading: true, // 是否正在加载（用于下拉刷新）
+    messageList: [],
+    threads: [],
+    loading: true,
+    activeFilter: 'all',
+    filters: [
+      { label: 'Primary', value: 'all' },
+      { label: 'Unread', value: 'unread' },
+      { label: 'Read', value: 'read' },
+    ],
   },
 
-  /** 生命周期函数--监听页面加载 */
-  onLoad(options) {
+  onLoad() {
     this.getMessageList();
-    // 处理接收到的数据
-    socket.onMessage((data) => {
-      data = JSON.parse(data);
-      if (data.type === 'message') {
-        const { userId, message } = data.data;
-        const { user, index } = this.getUserById(userId);
+    if (socket && typeof socket.onMessage === 'function') {
+      socket.onMessage((payload) => {
+        const parsed = typeof payload === 'string' ? JSON.parse(payload) : JSON.parse(payload.data);
+        if (parsed.type !== 'message') return;
+
+        const { userId, message } = parsed.data;
+        const record = this.getUserById(userId);
+        if (!record) return;
+
+        const { user, index } = record;
         this.data.messageList.splice(index, 1);
         this.data.messageList.unshift(user);
         user.messages.push(message);
+
         if (currentUser && userId === currentUser.userId) {
           this.setMessagesRead(userId);
           currentUser.eventChannel.emit('update', user);
+          return;
         }
-        this.setData({ messageList: this.data.messageList });
+
+        this.setData({ messageList: this.data.messageList }, () => {
+          this.syncThreads();
+        });
         app.setUnreadNum(this.computeUnreadNum());
-      }
-    });
+      });
+    }
   },
 
-  /** 生命周期函数--监听页面初次渲染完成 */
-  onReady() {},
-
-  /** 生命周期函数--监听页面显示 */
   onShow() {
     currentUser = null;
+    this.syncThreads();
   },
 
-  /** 生命周期函数--监听页面隐藏 */
-  onHide() {},
-
-  /** 生命周期函数--监听页面卸载 */
-  onUnload() {},
-
-  /** 页面相关事件处理函数--监听用户下拉动作 */
-  onPullDownRefresh() {},
-
-  /** 页面上拉触底事件的处理函数 */
-  onReachBottom() {},
-
-  /** 用户点击右上角分享 */
-  onShareAppMessage() {},
-
-  /** 获取完整消息列表 */
   getMessageList() {
+    this.setData({ loading: true });
     fetchMessageList().then(({ data }) => {
-      this.setData({ messageList: data, loading: false });
+      this.setData({ messageList: data, loading: false }, () => {
+        this.syncThreads();
+      });
+      app.setUnreadNum(this.computeUnreadNum());
     });
   },
 
-  /** 通过 userId 获取 user 对象和下标 */
   getUserById(userId) {
     let index = 0;
     while (index < this.data.messageList.length) {
@@ -72,10 +87,9 @@ Page({
       if (user.userId === userId) return { user, index };
       index += 1;
     }
-    // TODO：处理 userId 在列表中不存在的情况（）
+    return null;
   },
 
-  /** 计算未读消息数量 */
   computeUnreadNum() {
     let unreadNum = 0;
     this.data.messageList.forEach(({ messages }) => {
@@ -84,25 +98,73 @@ Page({
     return unreadNum;
   },
 
-  /** 打开对话页 */
+  buildThreads() {
+    return this.data.messageList
+      .map((item) => {
+        const latestMessage = item.messages[item.messages.length - 1] || {};
+        const unreadCount = item.messages.filter((message) => !message.read).length;
+        const isRead = unreadCount === 0;
+
+        return {
+          ...item,
+          unreadCount,
+          isRead,
+          timeLabel: formatThreadTime(latestMessage.time),
+          subject: isRead ? 'Conversation updated' : 'Waiting for your reply',
+          snippet: latestMessage.content || 'Open this thread to continue the conversation.',
+          sortTime: latestMessage.time || 0,
+        };
+      })
+      .filter((item) => {
+        if (this.data.activeFilter === 'unread') return !item.isRead;
+        if (this.data.activeFilter === 'read') return item.isRead;
+        return true;
+      })
+      .sort((left, right) => right.sortTime - left.sortTime);
+  },
+
+  syncThreads() {
+    const threads = this.buildThreads();
+    this.setData({ threads });
+  },
+
+  handleFilterTap(event) {
+    const { value } = event.currentTarget.dataset;
+    if (!value || value === this.data.activeFilter) return;
+    this.setData({ activeFilter: value }, () => {
+      this.syncThreads();
+    });
+  },
+
   toChat(event) {
     const { userId } = event.currentTarget.dataset;
-    wx.navigateTo({ url: `/pages/chat/index?userId${userId}` }).then(({ eventChannel }) => {
+    wx.navigateTo({ url: `/pages/chat/index?userId=${userId}` }).then(({ eventChannel }) => {
       currentUser = { userId, eventChannel };
-      const { user } = this.getUserById(userId);
-      eventChannel.emit('update', user);
+      const record = this.getUserById(userId);
+      if (!record) return;
+      eventChannel.emit('update', record.user);
     });
     this.setMessagesRead(userId);
   },
 
-  /** 将用户的所有消息标记为已读 */
   setMessagesRead(userId) {
-    const { user } = this.getUserById(userId);
-    user.messages.forEach((message) => {
+    const record = this.getUserById(userId);
+    if (!record) return;
+
+    record.user.messages.forEach((message) => {
       message.read = true;
     });
-    this.setData({ messageList: this.data.messageList });
+
+    this.setData({ messageList: this.data.messageList }, () => {
+      this.syncThreads();
+    });
     app.setUnreadNum(this.computeUnreadNum());
     markMessagesRead(userId);
+  },
+
+  goCompose() {
+    wx.navigateTo({
+      url: '/pages/release/index',
+    });
   },
 });

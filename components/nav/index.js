@@ -13,52 +13,52 @@ Component({
     visible: false,
     sidebar: [
       {
-        title: '首页',
+        title: 'Inbox',
         url: 'pages/home/index',
         isSidebar: true,
       },
       {
-        title: '搜索页',
+        title: 'Search',
         url: 'pages/search/index',
         isSidebar: false,
       },
       {
-        title: '发布页',
+        title: 'Compose',
         url: 'pages/release/index',
         isSidebar: false,
       },
       {
-        title: '消息列表页',
+        title: 'Messages',
         url: 'pages/message/index',
         isSidebar: true,
       },
       {
-        title: '对话页',
+        title: 'Chats',
         url: 'pages/chat/index',
         isSidebar: false,
       },
       {
-        title: '个人中心页',
+        title: 'Profile',
         url: 'pages/my/index',
         isSidebar: true,
       },
       {
-        title: '个人信息表单页',
+        title: 'Edit profile',
         url: 'pages/my/info-edit/index',
         isSidebar: false,
       },
       {
-        title: '设置页',
+        title: 'Settings',
         url: 'pages/setting/index',
         isSidebar: false,
       },
       {
-        title: '数据图表页',
+        title: 'Data center',
         url: 'pages/dataCenter/index',
         isSidebar: false,
       },
       {
-        title: '登录注册页',
+        title: 'Login',
         url: 'pages/login/login',
         isSidebar: false,
       },
@@ -84,7 +84,6 @@ Component({
         wx.switchTab({
           url: `/${url}`,
         }).then(() => {
-          // 防止点回tab时，sidebar依旧是展开模式
           that.setData({
             visible: false,
           });
@@ -102,7 +101,13 @@ Component({
 
     searchTurn() {
       wx.navigateTo({
-        url: `/pages/search/index`,
+        url: '/pages/search/index',
+      });
+    },
+
+    toProfile() {
+      wx.switchTab({
+        url: '/pages/my/index',
       });
     },
   },

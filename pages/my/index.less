@@ -1,102 +1,104 @@
-.my {
-  height: calc(100vh - 56px);
-  overflow-y: auto;
+@import '/variable.less';
 
-  --td-navbar-bg-color: transparent;
-  .nav-bg {
-    width: 750rpx;
-    height: 200rpx;
-    position: fixed;
-    top: 0;
+.account-page {
+  min-height: calc(100vh - @tab-bar-height);
+  padding: 0 24rpx 200rpx;
+  box-sizing: border-box;
+}
+
+.account-card,
+.account-section {
+  margin-top: 24rpx;
+  border-radius: 30rpx;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: @shadow-soft;
+}
+
+.account-card {
+  padding: 28rpx;
+
+  &__top {
+    display: flex;
+    gap: 20rpx;
+    align-items: center;
   }
 
-  &-info,
-  &-service,
-  &-setting {
-    background-color: #fff;
+  &__copy {
+    flex: 1;
+    min-width: 0;
   }
 
-  &-info {
-    border-radius: 24rpx;
-    margin: 8rpx 32rpx 0rpx 32rpx;
-    padding-bottom: 32rpx;
-    overflow: hidden;
-
-    .cell-class-title {
-      font-weight: 600 !important;
-    }
-
-    .cell-class-center {
-      display: flex;
-      align-items: center !important;
-    }
-
-    .divider-class {
-      margin-top: 0 !important;
-      margin-bottom: 0 !important;
-    }
-
-    .grid-class {
-      margin-top: 40rpx;
-    }
-
-    .grid-item .t-grid-item__content {
-      padding: 0px !important;
-    }
-
-    .split-line {
-      border-right: 1px solid #e7e7e7;
-    }
-
-    // 头像margin-right
-    --td-spacer-1: 32rpx;
-
-    &__person {
-      .name {
-        line-height: 48rpx;
-        font-size: 32rpx;
-        color: #000000e6;
-        font-weight: 600;
-      }
-
-      .tags {
-        display: flex;
-        margin-top: 16rpx;
-
-        --td-text-color-primary: #000000e6;
-        --td-tag-medium-font-size: 20rpx;
-        --td-tag-medium-icon-size: 24rpx;
-      }
-
-      .tag:not(:last-child) {
-        margin-right: 16rpx;
-      }
-    }
+  &__name,
+  &__email,
+  &__plan {
+    display: block;
   }
 
-  &-service {
-    border-radius: 24rpx;
-    margin: 32rpx;
-    padding-bottom: 8rpx;
-    overflow: hidden;
-
-    &__list-item {
-      .t-grid-item__content {
-        padding-bottom: 16rpx !important;
-      }
-      .t-grid-item__text {
-        height: 40rpx !important;
-      }
-    }
-
-    &--tips {
-      height: 44rpx;
-      line-height: 44rpx;
-      padding-left: 40rpx;
-      margin-top: 32rpx;
-      color: #000000e6;
-      font-size: 28rpx;
-      font-weight: 600;
-    }
+  &__name {
+    font-size: 34rpx;
+    font-weight: 700;
+    color: @gy1;
   }
+
+  &__email {
+    margin-top: 8rpx;
+    font-size: 24rpx;
+    color: @gy2;
+  }
+
+  &__plan {
+    margin-top: 8rpx;
+    font-size: 22rpx;
+    color: @gy3;
+  }
+}
+
+.account-storage {
+  margin-top: 24rpx;
+  padding: 24rpx;
+  border-radius: 24rpx;
+  background: @surface-3;
+
+  &__label {
+    display: block;
+    font-size: 22rpx;
+    color: @brand-google-blue;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  &__value {
+    display: block;
+    margin-top: 12rpx;
+    font-size: 28rpx;
+    color: @gy1;
+    line-height: 1.5;
+  }
+}
+
+.account-section {
+  padding: 28rpx 0 12rpx;
+
+  &__title {
+    padding: 0 28rpx;
+    font-size: 30rpx;
+    font-weight: 700;
+    color: @gy1;
+  }
+}
+
+.grid-class {
+  margin-top: 20rpx;
+}
+
+.grid-item .t-grid-item__content {
+  padding: 10rpx 0 18rpx !important;
+}
+
+.account-service__list {
+  margin-top: 18rpx;
+}
+
+.account-service__list-item .t-grid-item__content {
+  padding-bottom: 16rpx !important;
 }
