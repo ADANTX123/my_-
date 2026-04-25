@@ -1,91 +1,128 @@
-.login {
+@import '/variable.less';
+
+.login-page {
+  position: relative;
+  min-height: 100vh;
+  padding: 120rpx 36rpx 56rpx;
+  box-sizing: border-box;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(237, 244, 255, 0.98) 0%, #f3f7ff 46%, #ffffff 100%);
+}
+
+.login-bg {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(2rpx);
+  opacity: 0.72;
+
+  &--blue {
+    top: -120rpx;
+    right: -130rpx;
+    width: 380rpx;
+    height: 380rpx;
+    background: rgba(79, 143, 232, 0.16);
+  }
+
+  &--green {
+    bottom: 60rpx;
+    left: -160rpx;
+    width: 360rpx;
+    height: 360rpx;
+    background: rgba(159, 194, 255, 0.22);
+  }
+}
+
+.login-card {
+  position: relative;
+  z-index: 1;
+  padding: 42rpx 34rpx 36rpx;
+  border-radius: 44rpx;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1rpx solid rgba(211, 227, 253, 0.92);
+  box-shadow: 0 28rpx 68rpx rgba(60, 64, 67, 0.12);
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 104rpx;
+    height: 104rpx;
+    border-radius: 32rpx;
+    background: @surface-3;
+    color: @brand-google-blue-deep;
+  }
+
+  &__eyebrow {
+    display: block;
+    margin-top: 34rpx;
+    font-size: 22rpx;
+    font-weight: 800;
+    color: @brand-google-blue;
+    letter-spacing: 1rpx;
+  }
+
   &__title {
-    color: rgba(0, 0, 0, 0.9);
-    font-size: 56rpx;
-    font-weight: 600;
-    line-height: 72rpx;
-    padding: 16rpx 32rpx 40rpx;
+    display: block;
+    margin-top: 14rpx;
+    font-size: 48rpx;
+    line-height: 1.16;
+    font-weight: 900;
+    color: @gy1;
   }
 
-  &__input {
-    .input-label {
-      display: flex;
-      padding-right: 32rpx;
-      box-sizing: border-box;
-      border-right: 1rpx solid #e7e7e7;
-    }
-
-    .input-icon {
-      margin-left: 8rpx;
-    }
+  &__desc {
+    display: block;
+    margin-top: 18rpx;
+    font-size: 25rpx;
+    line-height: 1.68;
+    color: @gy2;
   }
+}
 
-  &__tips {
-    color: rgba(0, 0, 0, 0.4);
-    font-size: 24rpx;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 40rpx;
-    margin: 24rpx 32rpx 32rpx;
+.feature-list {
+  margin-top: 30rpx;
+  padding: 20rpx;
+  border-radius: 30rpx;
+  background: #f8fafd;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  min-height: 58rpx;
+  color: @brand-google-blue;
+
+  text {
+    font-size: 25rpx;
+    font-weight: 800;
+    color: @gy1;
   }
+}
 
-  &__button {
-    margin: 0 32rpx;
-  }
+.agreement {
+  display: block;
+  margin-top: 28rpx;
 
-  &__password--forget {
+  &__label {
     display: flex;
-    font-size: 24rpx;
-    align-items: center;
-    margin: 32rpx;
-    line-height: 40rpx;
+    align-items: flex-start;
+    gap: 12rpx;
+    font-size: 23rpx;
+    line-height: 1.55;
+    color: @gy3;
   }
 
-  &__others {
-    margin: 64rpx 32rpx auto 32rpx;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    &-label {
-      min-width: 96rpx;
-      color: rgba(0, 0, 0, 0.6);
-      font-size: 24rpx;
-      line-height: 40rpx;
-    }
-
-    &-buttons {
-      flex: 1;
-      margin-left: 32rpx;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-
-      .button {
-        margin: 0 !important;
-
-        &:not(:last-child) {
-          margin-right: 32rpx !important;
-        }
-      }
-    }
+  checkbox {
+    transform: scale(0.82);
+    transform-origin: left top;
   }
+}
 
-  // 覆盖组件样式
-  .radio-class {
-    --td-radio-icon-size: 32rpx;
-    --td-radio-label-line-height: 40rpx;
-
-    align-items: center;
-  }
-
-  .radio-class-icon {
-    margin-top: 0 !important;
-  }
-
-  .radio-class-label {
-    margin-left: 8rpx !important;
-    font-size: 24rpx !important;
-    line-height: 40rpx !important;
-  }
+.login-button {
+  margin-top: 30rpx;
+  --td-button-primary-bg-color: @brand-google-blue;
+  --td-button-primary-border-color: @brand-google-blue;
+  --td-button-border-radius: 30rpx;
 }

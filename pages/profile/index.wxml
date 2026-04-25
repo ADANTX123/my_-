@@ -1,0 +1,80 @@
+<nav title-text="心理档案" />
+
+<scroll-view class="profile-page" scroll-y>
+  <view class="profile-hero">
+    <text class="profile-hero__eyebrow">Personal Archive</text>
+    <text class="profile-hero__title">你的压力变化，会被持续看见</text>
+    <text class="profile-hero__desc">这里汇总测评、情绪记录和辅导预约，帮助完成“跟踪优化”的闭环。</text>
+  </view>
+
+  <view wx:if="{{authUser}}" class="account-card">
+    <image class="account-card__avatar" src="{{authUser.avatarUrl}}" mode="aspectFill" />
+    <view class="account-card__body">
+      <text class="account-card__label">微信已验证</text>
+      <text class="account-card__name">{{authUser.nickName || '微信用户'}}</text>
+    </view>
+    <view class="account-card__logout" bindtap="logout">退出</view>
+  </view>
+
+  <view wx:if="{{latestResult}}" class="latest-card" bindtap="goResult">
+    <view>
+      <text class="latest-card__label">最近一次测评</text>
+      <text class="latest-card__title">{{latestResult.level.label}} · {{latestResult.stressIndex}}</text>
+      <text class="latest-card__desc">最高风险维度：{{latestResult.riskDimension.name}}</text>
+    </view>
+    <view class="latest-card__pill">查看报告</view>
+  </view>
+  <view wx:else class="latest-card latest-card--empty">
+    <view>
+      <text class="latest-card__label">还没有测评档案</text>
+      <text class="latest-card__title">先完成一次 SMSHS 自评</text>
+      <text class="latest-card__desc">系统会保存结果并生成趋势。</text>
+    </view>
+    <view class="latest-card__pill" bindtap="goAssessment">开始</view>
+  </view>
+
+  <view class="archive-section">
+    <view class="section-title">
+      <text>压力趋势</text>
+      <text>{{history.length}} 次测评</text>
+    </view>
+    <view wx:if="{{trendBars.length}}" class="trend-chart">
+      <view wx:for="{{trendBars}}" wx:key="label" class="trend-bar">
+        <view class="trend-bar__column">
+          <view class="trend-bar__fill" style="height: {{item.value}}%;" />
+        </view>
+        <text>{{item.value}}</text>
+        <text>{{item.date}}</text>
+      </view>
+    </view>
+    <view wx:else class="empty-note">暂无趋势。完成两次以上测评后会更有参考价值。</view>
+  </view>
+
+  <view class="archive-section">
+    <view class="section-title">
+      <text>情绪记录</text>
+      <text>{{emotionLogs.length}} 条近期</text>
+    </view>
+    <view wx:if="{{emotionLogs.length}}">
+      <view wx:for="{{emotionLogs}}" wx:key="id" class="mini-record">
+        <text>{{item.createdLabel}}</text>
+        <text>{{item.tagText}} · 强度 {{item.intensity}}</text>
+      </view>
+    </view>
+    <view wx:else class="empty-note">还没有情绪记录，可以从底部“记录”开始。</view>
+  </view>
+
+  <view class="archive-section">
+    <view class="section-title">
+      <text>辅导预约</text>
+      <text>{{appointments.length}} 条近期</text>
+    </view>
+    <view wx:if="{{appointments.length}}">
+      <view wx:for="{{appointments}}" wx:key="id" class="mini-record">
+        <text>{{item.slot}} · {{item.counselorName}}</text>
+        <text>{{item.status}}</text>
+      </view>
+    </view>
+    <view wx:else class="empty-note" bindtap="goAppointment">暂无预约。需要支持时可点这里提交。</view>
+  </view>
+</scroll-view>

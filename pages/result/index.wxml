@@ -1,0 +1,129 @@
+<nav title-text="评估报告" />
+
+<scroll-view class="result-page" scroll-y>
+  <view wx:if="{{hasResult}}" class="result-content">
+    <view class="score-card">
+      <view class="score-card__ring" style="{{ringStyle}}">
+        <view class="score-card__inner">
+          <text class="score-card__score">{{result.stressIndex}}</text>
+          <text class="score-card__unit">压力指数</text>
+        </view>
+      </view>
+      <view class="score-card__copy">
+        <text class="score-card__level score-card__level--{{result.level.tone}}">{{result.level.label}}</text>
+        <text class="score-card__desc">{{result.level.desc}}</text>
+        <text class="score-card__time">测评时间 {{result.createdLabel}}</text>
+      </view>
+    </view>
+
+    <view class="model-card">
+      <view class="section-title">
+        <text>规则量表拆解</text>
+        <text>SMSHS 主评估</text>
+      </view>
+      <view class="signal-grid">
+        <view wx:for="{{result.modelSignals}}" wx:key="label" class="signal-card">
+          <text class="signal-card__value">{{item.value}}</text>
+          <text class="signal-card__label">{{item.label}}</text>
+          <text class="signal-card__desc">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{result.mlAuxiliary}}" class="ml-card">
+      <view class="section-title">
+        <text>机器学习辅助分析</text>
+        <text>{{result.mlAuxiliary.sampleSize}} 份问卷训练 · 非诊断</text>
+      </view>
+      <view class="ml-summary-grid">
+        <view class="ml-summary-card">
+          <text>{{result.mlAuxiliary.predictedScore}}</text>
+          <text>ML 预测分</text>
+        </view>
+        <view class="ml-summary-card">
+          <text>{{result.mlAuxiliary.blendedScore}}</text>
+          <text>融合参考分</text>
+        </view>
+        <view class="ml-summary-card">
+          <text>{{result.mlAuxiliary.confidence}}%</text>
+          <text>{{result.mlAuxiliary.predictedLevel.label}}</text>
+        </view>
+      </view>
+
+      <view class="probability-list">
+        <view wx:for="{{result.mlAuxiliary.probabilities}}" wx:key="key" class="probability-row probability-row--{{item.tone}}">
+          <view class="probability-row__head">
+            <text>{{item.label}}</text>
+            <text>{{item.percent}}%</text>
+          </view>
+          <view class="probability-row__track">
+            <view class="probability-row__bar" style="width: {{item.percent}}%;" />
+          </view>
+        </view>
+      </view>
+
+      <view class="contributor-list">
+        <view wx:for="{{result.mlAuxiliary.contributors}}" wx:key="label" class="contributor-card">
+          <view class="contributor-card__head">
+            <text>{{item.label}}</text>
+            <text>{{item.value}}</text>
+          </view>
+          <view class="contributor-card__track">
+            <view class="contributor-card__bar" style="width: {{item.impactPercent}}%;" />
+          </view>
+          <text class="contributor-card__advice">{{item.advice}}</text>
+        </view>
+      </view>
+
+      <text class="ml-card__note">{{result.mlAuxiliary.caveat}}</text>
+    </view>
+
+    <view class="dimension-card">
+      <view class="section-title">
+        <text>四维得分</text>
+        <text>最高风险：{{result.riskDimension.name}}</text>
+      </view>
+      <view wx:for="{{result.dimensionSummaries}}" wx:key="key" class="dimension-row">
+        <view class="dimension-row__head">
+          <text>{{item.name}}</text>
+          <text>{{item.percent}}%</text>
+        </view>
+        <view class="dimension-row__track">
+          <view class="dimension-row__bar" style="width: {{item.percent}}%; background: {{item.color}};" />
+        </view>
+      </view>
+    </view>
+
+    <view class="advice-card">
+      <view class="section-title">
+        <text>干预建议</text>
+        <text>按风险优先级生成</text>
+      </view>
+      <view wx:for="{{result.adviceList}}" wx:key="index" class="advice-card__item">
+        <text class="advice-card__dot">{{index + 1}}</text>
+        <text>{{item}}</text>
+      </view>
+    </view>
+
+    <view class="result-actions">
+      <view class="result-action result-action--blue" bindtap="goEmotion">
+        <text>记录情绪</text>
+        <text>开始 7 天跟踪</text>
+      </view>
+      <view class="result-action result-action--green" bindtap="goCourse">
+        <text>学习课程</text>
+        <text>匹配调节资源</text>
+      </view>
+      <view class="result-action result-action--yellow" bindtap="goAppointment">
+        <text>预约辅导</text>
+        <text>需要时获得支持</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else class="empty-card">
+    <text class="empty-card__title">还没有测评报告</text>
+    <text class="empty-card__desc">先完成一次 SMSHS 自评，系统会生成维度分、总分和干预建议。</text>
+    <view class="empty-card__button" bindtap="goAssessment">开始测评</view>
+  </view>
+</scroll-view>

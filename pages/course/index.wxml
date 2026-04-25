@@ -1,0 +1,50 @@
+<nav title-text="课程资源" />
+
+<scroll-view class="course-page" scroll-y>
+  <view class="course-hero">
+    <text class="course-hero__eyebrow">Intervention Library</text>
+    <text class="course-hero__title">按医学生压力源设计的调节课程</text>
+    <text class="course-hero__desc">问卷中 79 人明确需要课程/资源库，因此这里把学业、临床、睡眠和就业规划拆成可学习的小模块。</text>
+  </view>
+
+  <scroll-view class="category-row" scroll-x enable-flex show-scrollbar="{{false}}">
+    <view
+      wx:for="{{categories}}"
+      wx:key="*this"
+      class="category-pill {{selectedCategory == item ? 'category-pill--active' : ''}}"
+      data-category="{{item}}"
+      bindtap="selectCategory"
+    >
+      {{item}}
+    </view>
+  </scroll-view>
+
+  <view class="course-list">
+    <view wx:for="{{filteredCourses}}" wx:key="id" class="course-card">
+      <view class="course-card__meta">
+        <text>{{item.category}}</text>
+        <text>{{item.duration}}</text>
+      </view>
+      <text class="course-card__title">{{item.title}}</text>
+      <text class="course-card__desc">{{item.desc}}</text>
+      <view class="course-card__foot">
+        <text>{{item.level}}</text>
+        <view data-title="{{item.title}}" bindtap="startCourse">开始学习</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="demand-card">
+    <view class="section-title">
+      <text>问卷需求依据</text>
+      <text>199 份样本</text>
+    </view>
+    <view wx:for="{{featureDemand}}" wx:key="label" class="demand-row">
+      <text>{{item.label}}</text>
+      <view class="demand-row__track">
+        <view class="demand-row__bar" style="width: {{item.value}}%;" />
+      </view>
+      <text>{{item.value}}</text>
+    </view>
+  </view>
+</scroll-view>

@@ -1,0 +1,69 @@
+<nav title-text="辅导预约" />
+
+<scroll-view class="appointment-page" scroll-y>
+  <view class="appointment-hero">
+    <text class="appointment-hero__eyebrow">Counseling Booking</text>
+    <text class="appointment-hero__title">需要支持时，不必一个人扛</text>
+    <text class="appointment-hero__desc">问卷中一对一咨询和线上线下结合需求明显，先用预约单把求助路径变短。</text>
+  </view>
+
+  <view class="appointment-section">
+    <view class="section-title">
+      <text>选择咨询师</text>
+      <text>按压力场景匹配</text>
+    </view>
+    <view wx:for="{{counselors}}" wx:key="id" class="counselor-card {{selectedCounselorId == item.id ? 'counselor-card--active' : ''}}" data-id="{{item.id}}" bindtap="selectCounselor">
+      <view class="counselor-card__top">
+        <text class="counselor-card__name">{{item.name}}</text>
+        <text class="counselor-card__title">{{item.title}}</text>
+      </view>
+      <text class="counselor-card__desc">{{item.desc}}</text>
+      <view class="counselor-card__tags">
+        <text wx:for="{{item.tags}}" wx:key="*this">{{item}}</text>
+      </view>
+      <view wx:if="{{selectedCounselorId == item.id}}" class="slot-row">
+        <view
+          wx:for="{{item.slots}}"
+          wx:key="*this"
+          class="slot-pill {{selectedSlot == item ? 'slot-pill--active' : ''}}"
+          data-slot="{{item}}"
+          catchtap="selectSlot"
+        >
+          {{item}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="appointment-section">
+    <view class="section-title">
+      <text>想先说什么</text>
+      <text>可选</text>
+    </view>
+    <textarea
+      class="concern-textarea"
+      placeholder="例如：最近临床实习和考研压力叠加，睡眠变浅，想聊聊如何安排。"
+      value="{{concern}}"
+      maxlength="180"
+      bindinput="onConcernInput"
+    />
+    <view class="submit-button" bindtap="submitAppointment">提交预约</view>
+  </view>
+
+  <view class="appointment-section">
+    <view class="section-title">
+      <text>我的预约</text>
+      <text>{{appointments.length}} 条</text>
+    </view>
+    <view wx:if="{{appointments.length}}">
+      <view wx:for="{{appointments}}" wx:key="id" class="appointment-record">
+        <view>
+          <text class="appointment-record__title">{{item.counselorName}} · {{item.slot}}</text>
+          <text class="appointment-record__desc">{{item.concern}}</text>
+        </view>
+        <text class="appointment-record__status">{{item.status}}</text>
+      </view>
+    </view>
+    <view wx:else class="empty-note">还没有预约记录。提交后会在这里保留档案。</view>
+  </view>
+</scroll-view>
