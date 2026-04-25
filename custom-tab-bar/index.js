@@ -8,17 +8,22 @@ Component({
       {
         icon: 'home',
         value: 'home',
-        label: 'Home',
+        label: '首页',
+      },
+      {
+        icon: 'edit-1',
+        value: 'assessment',
+        label: '测评',
       },
       {
         icon: 'chat',
-        value: 'message',
-        label: 'Inbox',
+        value: 'emotion',
+        label: '记录',
       },
       {
         icon: 'user',
-        value: 'my',
-        label: 'Profile',
+        value: 'profile',
+        label: '档案',
       },
     ],
   },
@@ -35,11 +40,7 @@ Component({
           });
         }
       }
-
       this.setUnreadNum(app.globalData.unreadNum);
-      app.eventBus.on('unread-num-change', (unreadNum) => {
-        this.setUnreadNum(unreadNum);
-      });
     },
   },
   methods: {

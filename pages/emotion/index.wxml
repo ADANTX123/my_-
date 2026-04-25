@@ -1,0 +1,60 @@
+<nav title-text="情绪记录" />
+
+<scroll-view class="emotion-page" scroll-y>
+  <view class="emotion-hero">
+    <text class="emotion-hero__eyebrow">Daily Tracking</text>
+    <text class="emotion-hero__title">把压力变化留下线索</text>
+    <text class="emotion-hero__desc">每天 30 秒记录情绪、强度和触发事件，档案页会把这些记录变成趋势。</text>
+  </view>
+
+  <view class="emotion-card">
+    <view class="section-title">
+      <text>今天的状态</text>
+      <text>强度 {{intensity}} / 5</text>
+    </view>
+    <view class="tag-cloud">
+      <view
+        wx:for="{{tagOptions}}"
+        wx:key="label"
+        class="tag-pill {{item.active ? 'tag-pill--active' : ''}}"
+        data-tag="{{item.label}}"
+        bindtap="toggleTag"
+      >
+        {{item.label}}
+      </view>
+    </view>
+    <view class="slider-wrap">
+      <text>轻</text>
+      <slider value="{{intensity}}" min="1" max="5" step="1" activeColor="#1a73e8" bindchange="changeIntensity" />
+      <text>强</text>
+    </view>
+    <textarea
+      class="emotion-textarea"
+      placeholder="例如：今天技能操作考核前很紧张，但和同学练习后好一些。"
+      value="{{note}}"
+      maxlength="180"
+      bindinput="onNoteInput"
+    />
+    <view class="emotion-save" bindtap="saveLog">保存情绪记录</view>
+  </view>
+
+  <view class="history-section">
+    <view class="section-title">
+      <text>最近记录</text>
+      <text>{{logs.length}} 条</text>
+    </view>
+    <view wx:if="{{logs.length}}">
+      <view wx:for="{{logs}}" wx:key="id" class="log-card">
+        <view class="log-card__top">
+          <text>{{item.createdLabel}}</text>
+          <text>强度 {{item.intensity}}</text>
+        </view>
+        <view class="log-card__tags">
+          <text wx:for="{{item.tags}}" wx:key="*this">{{item}}</text>
+        </view>
+        <text wx:if="{{item.note}}" class="log-card__note">{{item.note}}</text>
+      </view>
+    </view>
+    <view wx:else class="empty-note">还没有记录。完成第一次记录后，这里会出现你的情绪轨迹。</view>
+  </view>
+</scroll-view>

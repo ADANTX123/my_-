@@ -1,85 +1,78 @@
-import request from '~/api/request';
+import { getStoredAuth, HOME_PAGE, saveAuth, wxLogin } from '../../utils/auth';
+
+const app = getApp();
 
 Page({
   data: {
-    phoneNumber: '',
-    isPhoneNumber: false,
-    isCheck: false,
-    isSubmit: false,
-    isPasswordLogin: false,
-    passwordInfo: {
-      account: '',
-      password: '',
-    },
-    radioValue: '',
+    agreed: false,
+    loading: false,
   },
 
-  /* 自定义功能函数 */
-  changeSubmit() {
-    if (this.data.isPasswordLogin) {
-      if (this.data.passwordInfo.account !== '' && this.data.passwordInfo.password !== '' && this.data.isCheck) {
-        this.setData({ isSubmit: true });
-      } else {
-        this.setData({ isSubmit: false });
-      }
-    } else if (this.data.isPhoneNumber && this.data.isCheck) {
-      this.setData({ isSubmit: true });
-    } else {
-      this.setData({ isSubmit: false });
+  onLoad() {
+    this.redirectIfLoggedIn();
+  },
+
+  onShow() {
+    this.redirectIfLoggedIn();
+  },
+
+  redirectIfLoggedIn() {
+    if (getStoredAuth()) {
+      wx.switchTab({
+        url: HOME_PAGE,
+      });
     }
   },
 
-  // 手机号变更
-  onPhoneInput(e) {
-    const isPhoneNumber = /^[1][3,4,5,7,8,9][0-9]{9}$/.test(e.detail.value);
+  onAgreeChange(event) {
+    const values = event.detail.value || [];
     this.setData({
-      isPhoneNumber,
-      phoneNumber: e.detail.value,
+      agreed: values.indexOf('agree') >= 0,
     });
-    this.changeSubmit();
   },
 
-  // 用户协议选择变更
-  onCheckChange(e) {
-    const { value } = e.detail;
-    this.setData({
-      radioValue: value,
-      isCheck: value === 'agree',
-    });
-    this.changeSubmit();
-  },
+  async handleWechatLogin() {
+    if (!this.data.agreed) {
+      wx.showToast({
+        title: '请先勾选授权说明',
+        icon: 'none',
+      });
+      return;
+    }
 
-  onAccountChange(e) {
-    this.setData({ passwordInfo: { ...this.data.passwordInfo, account: e.detail.value } });
-    this.changeSubmit();
-  },
+    this.setData({ loading: true });
+    try {
+      const loginRes = await wxLogin();
+      if (!loginRes.code) {
+        throw new Error('未获取到微信登录凭证');
+      }
 
-  onPasswordChange(e) {
-    this.setData({ passwordInfo: { ...this.data.passwordInfo, password: e.detail.value } });
-    this.changeSubmit();
-  },
+      const auth = saveAuth({
+        userInfo: {
+          nickName: '微信用户',
+          avatarUrl: '/static/avatar1.png',
+        },
+        loginCode: loginRes.code,
+        provider: 'wechat',
+      });
+      app.setAuth(auth);
 
-  // 切换登录方式
-  changeLogin() {
-    this.setData({ isPasswordLogin: !this.data.isPasswordLogin, isSubmit: false });
-  },
-
-  async login() {
-    if (this.data.isPasswordLogin) {
-      const res = await request('/login/postPasswordLogin', 'post', { data: this.data.passwordInfo });
-      if (res.success) {
-        await wx.setStorageSync('access_token', res.data.token);
+      wx.showToast({
+        title: '登录成功',
+        icon: 'success',
+      });
+      setTimeout(() => {
         wx.switchTab({
-          url: `/pages/my/index`,
+          url: HOME_PAGE,
         });
-      }
-    } else {
-      const res = await request('/login/getSendMessage', 'get');
-      if (res.success) {
-        wx.navigateTo({
-          url: `/pages/loginCode/loginCode?phoneNumber=${this.data.phoneNumber}`,
-        });
-      }
+      }, 350);
+    } catch (error) {
+      wx.showToast({
+        title: '微信授权未完成',
+        icon: 'none',
+      });
+    } finally {
+      this.setData({ loading: false });
     }
   },
 });
