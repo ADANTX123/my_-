@@ -1,80 +1,49 @@
-<t-navbar left-arrow />
-<view class="page login">
-  <view class="login__title"> 欢迎登录 TDsign </view>
-  <view class="login__content">
-    <view class="login__input">
-      <view class="login__password" wx:if="{{isPasswordLogin}}">
-        <t-input
-          label="账号"
-          placeholder="请输入手机号/邮箱"
-          value="{{passwordInfo.account}}"
-          bindchange="onAccountChange"
-        ></t-input>
-        <t-input
-          label="密码"
-          placeholder="请输入密码"
-          type="password"
-          clearable
-          value="{{passwordInfo.password}}"
-          bindchange="onPasswordChange"
-        />
+<view class="login-page">
+  <view class="login-bg login-bg--blue" />
+  <view class="login-bg login-bg--green" />
+
+  <view class="login-card">
+    <view class="login-card__logo">
+      <t-icon name="logo-wechat-stroke" size="64rpx" />
+    </view>
+    <text class="login-card__eyebrow">Wechat Verification</text>
+    <text class="login-card__title">登录后继续使用心理健康支持小程序</text>
+    <text class="login-card__desc">
+      登录用于保存你的测评报告、情绪记录和辅导预约。当前版本使用微信会话凭证做本地验证，正式上线时可接入后端换取 openid。
+    </text>
+
+    <view class="feature-list">
+      <view class="feature-item">
+        <t-icon name="logo-wechat-stroke" size="34rpx" />
+        <text>微信会话校验</text>
       </view>
-
-      <t-input wx:else value="{{phoneNumber}}" placeholder="请输入手机号" type="number" bindchange="onPhoneInput">
-        <view slot="label" class="input-label">
-          <text>+86</text>
-          <t-icon name="caret-down-small" size="40rpx" class="input-iconl"></t-icon>
-        </view>
-      </t-input>
+      <view class="feature-item">
+        <t-icon name="user" size="34rpx" />
+        <text>保存个人测评档案</text>
+      </view>
+      <view class="feature-item">
+        <t-icon name="view-list" size="34rpx" />
+        <text>持续跟踪压力趋势</text>
+      </view>
     </view>
 
-    <view class="login__tips">未注册的手机号验证通过后将自动注册</view>
+    <checkbox-group class="agreement" bindchange="onAgreeChange">
+      <label class="agreement__label">
+        <checkbox value="agree" checked="{{agreed}}" color="#1a73e8" />
+        <text>我同意使用微信登录验证，并了解心理测评结果仅作支持参考。</text>
+      </label>
+    </checkbox-group>
 
-    <t-radio-group allow-uncheck borderless value="{{radioValue}}" bind:change="onCheckChange">
-      <t-radio
-        label="同意《协议条款》"
-        value="agree"
-        t-class="radio-class"
-        t-class-icon="radio-class-icon"
-        t-class-label="radio-class-label"
-      />
-    </t-radio-group>
-
-    <view class="login__button">
-      <t-button theme="primary" size="large" block disabled="{{!isSubmit}}" bindtap="login">
-        {{ isPasswordLogin ? '登录' : '验证并登录' }}
-      </t-button>
-    </view>
-
-    <view class="login__password--forget" wx:if="{{isPasswordLogin}}">
-      <text>忘记密码？</text>
-      <t-link theme="primary" size="small">找回密码</t-link>
-    </view>
-  </view>
-
-  <view class="login__others">
-    <text class="login__others-label">其他方式</text>
-    <view class="login__others-buttons">
-      <t-button class="button" variant="outline" theme="default" size="medium" shape="round" bindtap="changeLogin">
-        {{isPasswordLogin ? '验证码登录' : '密码登录' }}
-      </t-button>
-      <t-button
-        class="button"
-        variant="outline"
-        theme="default"
-        size="medium"
-        icon="logo-wechat-stroke"
-        shape="circle"
-      ></t-button>
-      <t-button class="button" variant="outline" theme="default" size="medium" icon="logo-qq" shape="circle"></t-button>
-      <t-button
-        class="button"
-        variant="outline"
-        theme="default"
-        size="medium"
-        icon="logo-wecom"
-        shape="circle"
-      ></t-button>
-    </view>
+    <t-button
+      class="login-button"
+      theme="primary"
+      size="large"
+      block
+      loading="{{loading}}"
+      disabled="{{loading}}"
+      bindtap="handleWechatLogin"
+    >
+      微信授权登录
+    </t-button>
   </view>
 </view>

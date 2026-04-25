@@ -8,14 +8,14 @@
       <view class="mail-nav__search" wx:if="{{navType === 'search'}}" bindtap="searchTurn">
         <t-icon class="mail-nav__search-icon" name="search" size="36rpx" />
         <view class="mail-nav__search-copy">
-          <text class="mail-nav__placeholder">Search in mail</text>
-          <text class="mail-nav__label">Google-style workspace</text>
+          <text class="mail-nav__placeholder">搜索课程、测评建议</text>
+          <text class="mail-nav__label">医学生心理健康支持</text>
         </view>
       </view>
 
       <view class="mail-nav__title-wrap" wx:else>
-        <text class="mail-nav__title">{{titleText || 'Mailbox'}}</text>
-        <text class="mail-nav__label">Focused view</text>
+        <text class="mail-nav__title">{{titleText || '心理支持'}}</text>
+        <text class="mail-nav__label">筛查 · 评估 · 干预 · 跟踪</text>
       </view>
 
       <image class="mail-nav__avatar" src="/static/avatar1.png" mode="aspectFill" bindtap="toProfile" />
@@ -27,7 +27,7 @@
     visible="{{visible}}"
     items="{{sidebar}}"
     placement="left"
-    title="Workspace"
+    title="心理支持"
     bind:item-click="itemClick"
   />
 </view>
