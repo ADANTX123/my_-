@@ -24,7 +24,7 @@
     <view
       wx:for="{{quickActions}}"
       wx:key="value"
-      class="home-action"
+      class="home-action {{item.wide ? 'home-action--wide' : ''}}"
       data-value="{{item.value}}"
       bindtap="handleQuickAction"
     >

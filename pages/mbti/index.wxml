@@ -1,0 +1,156 @@
+<nav title-text="MBTI 小游戏" />
+
+<scroll-view class="mbti-page" scroll-y>
+  <view class="mbti-hero">
+    <text class="mbti-hero__eyebrow">MBTI Fun Lab</text>
+    <text class="mbti-hero__title">16 型人格趣味测试</text>
+    <text class="mbti-hero__desc">
+      用 16 道校园情境题，看看你更像哪一种沟通、思考和生活节奏。适合轻松玩，不替代专业人格测评。
+    </text>
+    <view class="mbti-hero__note">更像小游戏 + 自我观察卡片</view>
+  </view>
+
+  <view wx:if="{{!result}}" class="mbti-play">
+    <view class="mbti-progress">
+      <view class="mbti-progress__top">
+        <text>已完成 {{answeredCount}} / {{questions.length}}</text>
+        <text>{{progress}}%</text>
+      </view>
+      <view class="mbti-progress__track">
+        <view class="mbti-progress__bar" style="width: {{progress}}%;" />
+      </view>
+    </view>
+
+    <view class="mbti-dimensions">
+      <view
+        wx:for="{{dimensionPairs}}"
+        wx:key="key"
+        class="mbti-dimension-chip {{item.key === currentDimension ? 'mbti-dimension-chip--active' : ''}}"
+      >
+        <text class="mbti-dimension-chip__label">{{item.label}}</text>
+        <text class="mbti-dimension-chip__hint">{{item.left}} / {{item.right}}</text>
+      </view>
+    </view>
+
+    <view class="mbti-question-card">
+      <text class="mbti-question-card__tag">Question {{currentIndex + 1}}</text>
+      <text class="mbti-question-card__title">{{currentQuestion.prompt}}</text>
+
+      <view class="mbti-option-list">
+        <view
+          wx:for="{{currentQuestion.options}}"
+          wx:key="key"
+          class="mbti-option {{answers[currentQuestion.id] === item.key ? 'mbti-option--active' : ''}}"
+          data-id="{{currentQuestion.id}}"
+          data-key="{{item.key}}"
+          bindtap="chooseOption"
+        >
+          <view class="mbti-option__head">
+            <text class="mbti-option__key">{{item.key}}</text>
+            <text class="mbti-option__title">{{item.title}}</text>
+          </view>
+          <text class="mbti-option__desc">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="mbti-actions">
+      <view class="mbti-actions__ghost {{currentIndex === 0 ? 'mbti-actions__ghost--disabled' : ''}}" bindtap="goPrev">
+        上一题
+      </view>
+      <view class="mbti-actions__primary" bindtap="goNext">{{primaryLabel}}</view>
+    </view>
+  </view>
+
+  <view wx:else class="mbti-result">
+    <view class="mbti-result-card">
+      <text class="mbti-result-card__eyebrow">Your Type</text>
+      <text class="mbti-result-card__type">{{result.type}}</text>
+      <text class="mbti-result-card__title">{{result.nickname}}</text>
+      <text class="mbti-result-card__summary">{{result.summary}}</text>
+      <view class="mbti-highlight-list">
+        <text wx:for="{{result.traitHighlights}}" wx:key="item" class="mbti-highlight">{{item}}</text>
+      </view>
+      <text class="mbti-result-card__time">{{result.createdLabel}}</text>
+      <text class="mbti-result-card__note">{{result.disclaimer}}</text>
+    </view>
+
+    <view class="mbti-panel">
+      <view class="mbti-panel__head">
+        <text>维度拆解</text>
+        <text>看看你更偏向哪一边</text>
+      </view>
+      <view wx:for="{{result.dimensionScores}}" wx:key="key" class="mbti-meter-card">
+        <view class="mbti-meter-card__top">
+          <text>{{item.label}}</text>
+          <text>{{item.dominantLabel}}</text>
+        </view>
+        <view class="mbti-meter-card__labels">
+          <text>{{item.leftLabel}}</text>
+          <text>{{item.rightLabel}}</text>
+        </view>
+        <view class="mbti-meter">
+          <view class="mbti-meter__left" style="width: {{item.leftPercent}}%;" />
+          <view class="mbti-meter__right" style="width: {{item.rightPercent}}%;" />
+        </view>
+        <view class="mbti-meter-card__values">
+          <text>{{item.left}} {{item.leftPercent}}%</text>
+          <text>{{item.right}} {{item.rightPercent}}%</text>
+        </view>
+        <text class="mbti-meter-card__hint">{{item.hint}}</text>
+      </view>
+    </view>
+
+    <view class="mbti-panel">
+      <view class="mbti-panel__head">
+        <text>你的校园风格</text>
+        <text>把结果放回真实学习和生活场景里看</text>
+      </view>
+      <view class="mbti-copy-list">
+        <view wx:for="{{result.campusSnapshots}}" wx:key="item" class="mbti-copy-card">
+          <text>{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="mbti-panel">
+      <view class="mbti-panel__head">
+        <text>你的优势与提醒</text>
+        <text>既看长处，也照顾状态</text>
+      </view>
+      <view class="mbti-strength-list">
+        <text wx:for="{{result.strengths}}" wx:key="item" class="mbti-strength">{{item}}</text>
+      </view>
+      <view class="mbti-tip-list">
+        <view wx:for="{{result.relaxTips}}" wx:key="item" class="mbti-tip">
+          <text class="mbti-tip__dot">{{index + 1}}</text>
+          <text class="mbti-tip__text">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="mbti-panel">
+      <view class="mbti-panel__head">
+        <text>推荐下一步</text>
+        <text>直接回到你的小程序主功能里</text>
+      </view>
+      <view class="mbti-recommend-list">
+        <view
+          wx:for="{{result.recommendations}}"
+          wx:key="route"
+          class="mbti-recommend"
+          bindtap="goAction"
+          data-route="{{item.route}}"
+        >
+          <text class="mbti-recommend__title">{{item.title}}</text>
+          <text class="mbti-recommend__desc">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="mbti-actions mbti-actions--result">
+      <view class="mbti-actions__ghost" bindtap="restartGame">再玩一次</view>
+      <view class="mbti-actions__primary" bindtap="goAction" data-route="assessment">做压力测评</view>
+    </view>
+  </view>
+</scroll-view>

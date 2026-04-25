@@ -20,6 +20,7 @@ Page({
       { label: '记录情绪', value: 'emotion', icon: 'chat', desc: '每日跟踪' },
       { label: '课程资源', value: 'course', icon: 'view-list', desc: '压力调节' },
       { label: '预约辅导', value: 'appointment', icon: 'user', desc: '获得支持' },
+      { label: 'MBTI 小游戏', value: 'mbti', icon: 'app', desc: '16 型趣味测试', wide: true },
     ],
   },
 
@@ -39,6 +40,7 @@ Page({
       emotion: () => wx.switchTab({ url: '/pages/emotion/index' }),
       course: () => wx.navigateTo({ url: '/pages/course/index' }),
       appointment: () => wx.navigateTo({ url: '/pages/appointment/index' }),
+      mbti: () => wx.navigateTo({ url: '/pages/mbti/index' }),
     };
     routes[value]();
   },

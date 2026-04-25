@@ -8,6 +8,7 @@
     "pages/result/index",
     "pages/course/index",
     "pages/appointment/index",
+    "pages/mbti/index",
     "pages/message/index",
     "pages/my/index"
   ],
