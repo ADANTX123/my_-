@@ -1,5 +1,17 @@
 {
-  "pages": ["pages/home/index", "pages/message/index", "pages/my/index"],
+  "pages": [
+    "pages/login/login",
+    "pages/home/index",
+    "pages/assessment/index",
+    "pages/emotion/index",
+    "pages/profile/index",
+    "pages/result/index",
+    "pages/course/index",
+    "pages/appointment/index",
+    "pages/mbti/index",
+    "pages/message/index",
+    "pages/my/index"
+  ],
   "usingComponents": {
     "t-toast": "tdesign-miniprogram/toast/toast"
   },
@@ -18,11 +30,6 @@
       "root": "pages/chat",
       "name": "chat",
       "pages": ["index"]
-    },
-    {
-      "root": "pages/login",
-      "name": "login",
-      "pages": ["login"]
     },
     {
       "root": "pages/loginCode",
@@ -59,12 +66,16 @@
         "text": "首页"
       },
       {
-        "pagePath": "pages/message/index",
-        "text": "消息"
+        "pagePath": "pages/assessment/index",
+        "text": "测评"
       },
       {
-        "pagePath": "pages/my/index",
-        "text": "我的"
+        "pagePath": "pages/emotion/index",
+        "text": "记录"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "text": "档案"
       }
     ]
   },

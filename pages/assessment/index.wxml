@@ -1,0 +1,57 @@
+<nav title-text="智能测评" />
+
+<scroll-view class="assessment-page" scroll-y>
+  <view class="assessment-hero">
+    <text class="assessment-hero__eyebrow">SMSHS Screening</text>
+    <text class="assessment-hero__title">医学生心理健康自评量表</text>
+    <text class="assessment-hero__desc">
+      根据最近两周的真实状态作答。系统会计算维度分、总分，并结合轻量回归模型给出压力分析和干预建议。
+    </text>
+  </view>
+
+  <view class="loop-strip">
+    <view wx:for="{{coreLoop}}" wx:key="label" class="loop-strip__item">
+      <text class="loop-strip__label">{{item.label}}</text>
+      <text class="loop-strip__desc">{{item.desc}}</text>
+    </view>
+  </view>
+
+  <view class="progress-card">
+    <view class="progress-card__top">
+      <text>已完成 {{answeredCount}} / {{questions.length}}</text>
+      <text>{{progress}}%</text>
+    </view>
+    <view class="progress-card__track">
+      <view class="progress-card__bar" style="width: {{progress}}%;" />
+    </view>
+  </view>
+
+  <view class="question-list">
+    <view wx:for="{{questions}}" wx:key="id" wx:for-item="question" class="question-card">
+      <view class="question-card__head">
+        <text class="question-card__index">{{index + 1}}</text>
+        <text class="question-card__title">{{question.text}}</text>
+      </view>
+
+      <view class="option-grid">
+        <view
+          wx:for="{{assessmentOptions}}"
+          wx:key="value"
+          wx:for-item="option"
+          class="assessment-option {{answers[question.id] == option.value ? 'assessment-option--active' : ''}}"
+          data-id="{{question.id}}"
+          data-value="{{option.value}}"
+          bindtap="chooseOption"
+        >
+          <text class="assessment-option__label">{{option.label}}</text>
+          <text class="assessment-option__desc">{{option.desc}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</scroll-view>
+
+<view class="assessment-footer">
+  <view class="assessment-footer__ghost" bindtap="resetAssessment">重新作答</view>
+  <view class="assessment-footer__primary" bindtap="submitAssessment">生成评估报告</view>
+</view>
