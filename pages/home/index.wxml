@@ -3,16 +3,20 @@
 <scroll-view class="home-shell" scroll-y>
   <view class="home-hero">
     <view class="home-hero__copy">
-      <text class="home-hero__eyebrow">Google-style workspace</text>
-      <text class="home-hero__title">Priority inbox for every important update</text>
-      <text class="home-hero__desc">A calmer dashboard for unread items, saved resources and quick actions.</text>
+      <text class="home-hero__eyebrow">Medical Student Support</text>
+      <text class="home-hero__title">医学生心理健康支持小程序</text>
+      <text class="home-hero__desc">围绕“筛查 → 评估 → 干预 → 跟踪”构建闭环，把问卷数据、量表评估和持续档案合到一个入口。</text>
     </view>
+    <view class="home-hero__badge" bindtap="goResult">
+      <text>{{heroBadgeValue}}</text>
+      <text>{{heroBadgeLabel}}</text>
+    </view>
+  </view>
 
-    <view class="home-stats">
-      <view wx:for="{{workspaceStats}}" wx:key="label" class="home-stats__item">
-        <text class="home-stats__value">{{item.value}}</text>
-        <text class="home-stats__label">{{item.label}}</text>
-      </view>
+  <view class="home-stats">
+    <view wx:for="{{stats}}" wx:key="label" class="home-stats__item">
+      <text class="home-stats__value">{{item.value}}</text>
+      <text class="home-stats__label">{{item.label}}</text>
     </view>
   </view>
 
@@ -25,48 +29,70 @@
       bindtap="handleQuickAction"
     >
       <t-icon name="{{item.icon}}" size="34rpx" />
-      <text>{{item.label}}</text>
+      <view>
+        <text>{{item.label}}</text>
+        <text>{{item.desc}}</text>
+      </view>
     </view>
   </view>
 
   <view class="home-section">
     <view class="home-section__header">
-      <text class="home-section__title">Highlights</text>
-      <text class="home-section__meta">What this Gmail-style pass changes first</text>
+      <text class="home-section__title">产品闭环</text>
+      <text class="home-section__meta">需求图里的核心流程已经拆成四个主功能模块</text>
     </view>
-    <swiper class="home-highlight-swiper" circular indicator-dots autoplay interval="4200" duration="500">
-      <swiper-item wx:for="{{workspaceHighlights}}" wx:key="title">
-        <view class="highlight-card">
-          <text class="highlight-card__title">{{item.title}}</text>
-          <text class="highlight-card__desc">{{item.desc}}</text>
+    <view class="loop-grid">
+      <view wx:for="{{coreLoop}}" wx:key="label" class="loop-card">
+        <text class="loop-card__index">{{index + 1}}</text>
+        <text class="loop-card__title">{{item.label}}</text>
+        <text class="loop-card__desc">{{item.desc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="home-section">
+    <view class="home-section__header">
+      <text class="home-section__title">问卷压力结构</text>
+      <text class="home-section__meta">来自 199 份医学生压力与心理健康需求调研</text>
+    </view>
+    <view class="pressure-grid">
+      <view wx:for="{{pressureOverview}}" wx:key="label" class="pressure-card pressure-card--{{item.tone}}">
+        <text>{{item.percent}}%</text>
+        <text>{{item.label}}</text>
+        <text>{{item.value}} 人</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="home-section">
+    <view class="home-section__header">
+      <text class="home-section__title">高压维度 Top 5</text>
+      <text class="home-section__meta">后续测评会把个人维度和群体维度进行对照</text>
+    </view>
+    <view class="dimension-list">
+      <view wx:for="{{topDimensions}}" wx:key="label" class="dimension-item">
+        <view class="dimension-item__top">
+          <text>{{item.label}}</text>
+          <text>{{item.value}}</text>
         </view>
-      </swiper-item>
-    </swiper>
-  </view>
-
-  <view class="home-section">
-    <view class="home-section__header">
-      <text class="home-section__title">Priority stack</text>
-      <text class="home-section__meta">Curated cards that feel closer to a focused inbox than a generic feed</text>
+        <view class="dimension-item__track">
+          <view class="dimension-item__bar" style="width: {{item.value * 20}}%;" />
+        </view>
+        <text class="dimension-item__desc">{{item.desc}}</text>
+      </view>
     </view>
-    <scroll-view class="home-card-row" scroll-x enable-flex show-scrollbar="{{false}}">
-      <card wx:for="{{focusCardInfo}}" wx:key="index" desc="{{item.desc}}" url="{{item.url}}" tags="{{item.tags}}" />
-    </scroll-view>
   </view>
 
   <view class="home-section home-section--last">
     <view class="home-section__header">
-      <text class="home-section__title">More updates</text>
-      <text class="home-section__meta">A broader queue for inspiration, drafts and saved assets</text>
+      <text class="home-section__title">用户最需要什么</text>
+      <text class="home-section__meta">功能优先级来自问卷选择频次</text>
     </view>
-    <view class="home-grid">
-      <card wx:for="{{cardInfo}}" wx:key="index" desc="{{item.desc}}" url="{{item.url}}" tags="{{item.tags}}" />
+    <view class="feature-list">
+      <view wx:for="{{topFeatures}}" wx:key="label" class="feature-chip">
+        <text>{{item.label}}</text>
+        <text>{{item.value}}</text>
+      </view>
     </view>
   </view>
 </scroll-view>
-
-<view class="home-release" bindtap="goRelease">
-  <t-icon name="edit-1" size="36rpx" />
-  <text>Compose</text>
-</view>
-<t-message id="t-message" />

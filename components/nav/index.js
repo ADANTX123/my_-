@@ -13,53 +13,38 @@ Component({
     visible: false,
     sidebar: [
       {
-        title: 'Inbox',
+        title: '首页看板',
         url: 'pages/home/index',
         isSidebar: true,
       },
       {
-        title: 'Search',
+        title: '智能测评',
+        url: 'pages/assessment/index',
+        isSidebar: true,
+      },
+      {
+        title: '情绪记录',
+        url: 'pages/emotion/index',
+        isSidebar: true,
+      },
+      {
+        title: '心理档案',
+        url: 'pages/profile/index',
+        isSidebar: true,
+      },
+      {
+        title: '课程资源',
+        url: 'pages/course/index',
+        isSidebar: false,
+      },
+      {
+        title: '辅导预约',
+        url: 'pages/appointment/index',
+        isSidebar: false,
+      },
+      {
+        title: '搜索资料',
         url: 'pages/search/index',
-        isSidebar: false,
-      },
-      {
-        title: 'Compose',
-        url: 'pages/release/index',
-        isSidebar: false,
-      },
-      {
-        title: 'Messages',
-        url: 'pages/message/index',
-        isSidebar: true,
-      },
-      {
-        title: 'Chats',
-        url: 'pages/chat/index',
-        isSidebar: false,
-      },
-      {
-        title: 'Profile',
-        url: 'pages/my/index',
-        isSidebar: true,
-      },
-      {
-        title: 'Edit profile',
-        url: 'pages/my/info-edit/index',
-        isSidebar: false,
-      },
-      {
-        title: 'Settings',
-        url: 'pages/setting/index',
-        isSidebar: false,
-      },
-      {
-        title: 'Data center',
-        url: 'pages/dataCenter/index',
-        isSidebar: false,
-      },
-      {
-        title: 'Login',
-        url: 'pages/login/login',
         isSidebar: false,
       },
     ],
@@ -107,7 +92,7 @@ Component({
 
     toProfile() {
       wx.switchTab({
-        url: '/pages/my/index',
+        url: '/pages/profile/index',
       });
     },
   },
