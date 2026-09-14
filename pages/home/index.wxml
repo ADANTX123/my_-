@@ -4,7 +4,7 @@
   <view class="home-hero">
     <view class="home-hero__copy">
       <text class="home-hero__eyebrow">Medical Student Support</text>
-      <text class="home-hero__title">医学生心理健康支持小程序</text>
+      <text class="home-hero__title">医护人员心理健康支持小程序</text>
       <text class="home-hero__desc">围绕“筛查 → 评估 → 干预 → 跟踪”构建闭环，把问卷数据、量表评估和持续档案合到一个入口。</text>
     </view>
     <view class="home-hero__badge" bindtap="goResult">
